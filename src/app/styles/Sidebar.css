@@ -1,0 +1,22 @@
+.sidebar {
+    z-index: 1050;
+    width: 15% !important;
+    padding: 0;
+    margin-top: 4%;
+    margin-bottom: 4%;
+}
+
+.sidebar-button {
+    width: 100%;
+    margin: 0;
+    color: black;
+    background-color: white;
+    border-color: white;
+    text-align: start;
+}
+
+.sidebar-button:hover {
+    color: white;
+    background-color: black;
+    border-color: black;
+}
