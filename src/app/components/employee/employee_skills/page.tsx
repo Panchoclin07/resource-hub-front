@@ -5,6 +5,8 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Button, Form, Row, Col, Container, Table } from "react-bootstrap";
 import TrashIcon from '../../common/icons/trash';
 import { authFetch } from '../../utils/authFetch';
+import toast from 'react-hot-toast';
+import ConfirmModal from '../../utils/confirm_modal/page';
 
 
 const SkillsComponent = () => {
@@ -38,6 +40,8 @@ const SkillsComponent = () => {
     const [skills, setSkills] = useState<Skill[]>([]);
     const [proficiencies, setProficiencies] = useState<Proficiency[]>([]);
     const [employeeSkills, setEmployeeSkills] = useState<EmployeeSkillProficiency[]>([]);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [selectedSkillToDelete, setSelectedSkillToDelete] = useState<{ employeeId: string, skillId: number } | null>(null);
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -87,18 +91,47 @@ const SkillsComponent = () => {
                 body: formData
             });
             if (response.ok) {
-                alert("Skill assigned correctly to employee!");
+                toast.success("Skill assigned correctly to employee!");
                 fetchData();
                 {/*setForm({ ...form, skillId: '', proficiencyId: '' });*/ }
             } else {
-                alert("Something went wrong!");
+                toast.error("Something went wrong!");
             }
         } catch (error) {
             console.error("Error submitting form: ", error);
         }
     };
 
-    const handleDelete = async (employeeId: string, skillId: number) => {
+    const handleDelete = (employeeId: string, skillId: number) => {
+        setSelectedSkillToDelete({ employeeId, skillId });
+        setShowConfirmModal(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!selectedSkillToDelete) return;
+
+        const { employeeId, skillId } = selectedSkillToDelete;
+
+        try {
+            const response = await authFetch(`http://localhost:8090/api/employee-skill-proficiency/${employeeId}/${skillId}`, {
+                method: "DELETE"
+            });
+
+            if (response.ok) {
+                toast.success("Skill was removed successfully!");
+                fetchData();
+            } else {
+                toast.error("Failed to remove the skill");
+            }
+        } catch (error) {
+            console.error("Error removing the skill: ", error);
+        } finally {
+            setShowConfirmModal(false);
+            setSelectedSkillToDelete(null);
+        }
+    };
+
+    {/*const handleDelete = async (employeeId: string, skillId: number) => {
         const confirmed = confirm("Are you sure you want to remove this skill?");
         if (!confirmed) return;
 
@@ -108,16 +141,16 @@ const SkillsComponent = () => {
             });
 
             if (response.ok) {
-                alert("Skill was removed successfully!");
+                toast.success("Skill was removed successfully!");
                 fetchData();
             } else {
-                alert("Failed to remove the skill");
+                toast.error("Failed to remove the skill");
             }
         }
         catch (error) {
             console.error("Error removing the skill: ", error);
         }
-    };
+    };*/}
 
     return (
         <div>
@@ -216,6 +249,12 @@ const SkillsComponent = () => {
                         </Table>
                     </Row>
                 </Container>
+                <ConfirmModal
+                    show={showConfirmModal}
+                    onHide={() => setShowConfirmModal(false)}
+                    onConfirm={confirmDelete}
+                    message="Are you sure you want to remove this skill?"
+                />
             </Form>
         </div>
     )

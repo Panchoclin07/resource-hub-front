@@ -4,6 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Form, Row, Col, Container, Table } from "react-bootstrap";
 import TrashIcon from '../../common/icons/trash';
 import { authFetch } from '../../utils/authFetch';
+import toast from 'react-hot-toast';
+import ConfirmModal from '../../utils/confirm_modal/page';
 
 type Props = {
     vacancyId: string;
@@ -38,6 +40,8 @@ const VacancySkills = ({ vacancyId, projectId }: Props) => {
     const [skills, setSkills] = useState<Skill[]>([]);
     const [proficiencies, setProficiencies] = useState<Proficiency[]>([]);
     const [vacancySkills, setVacancySkills] = useState<VacancySkillProficiency[]>([]);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [selectedSkillToDelete, setSelectedSkillToDelete] = useState<{ vacancyId: string, skillId: number } | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -83,10 +87,10 @@ const VacancySkills = ({ vacancyId, projectId }: Props) => {
                 body: formData
             });
             if (response.ok) {
-                alert("Skill assigned correctly to vacancy!");
+                toast.success("Skill assigned correctly to vacancy!");
                 fetchData();
             } else {
-                alert("Something went wrong!");
+                toast.error("Something went wrong!");
                 console.log(form.vacancyId, form.skillId, form.proficiencyId);
             }
         } catch (error) {
@@ -94,7 +98,36 @@ const VacancySkills = ({ vacancyId, projectId }: Props) => {
         }
     };
 
-    const handleDelete = async (vacancyId: string, skillId: number) => {
+    const handleDelete = (vacancyId: string, skillId: number) => {
+        setSelectedSkillToDelete({ vacancyId, skillId });
+        setShowConfirmModal(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!selectedSkillToDelete) return;
+
+        const { vacancyId, skillId } = selectedSkillToDelete;
+
+        try {
+            const response = await authFetch(`http://localhost:8090/api/vacancies/${vacancyId}/${skillId}`, {
+                method: "DELETE"
+            });
+
+            if (response.ok) {
+                toast.success("Skill was removed successfully!");
+                fetchData();
+            } else {
+                toast.error("Failed to remove the skill");
+            }
+        } catch (error) {
+            console.error("Error removing the skill: ", error);
+        } finally {
+            setShowConfirmModal(false);
+            setSelectedSkillToDelete(null);
+        }
+    };
+
+    {/*const handleDelete = async (vacancyId: string, skillId: number) => {
         const confirmed = confirm("Are you sure you want to remove this skill?");
         if (!confirmed) return;
 
@@ -104,16 +137,18 @@ const VacancySkills = ({ vacancyId, projectId }: Props) => {
             });
 
             if (response.ok) {
-                alert("Skill was removed successfully!");
+                toast.success("Skill was removed successfully!");
                 fetchData();
             } else {
-                alert("Failed to remove the skill");
+                toast.error("Failed to remove the skill");
             }
         }
         catch (error) {
             console.error("Error removing the skill: ", error);
         }
     };
+    */}
+
     return (
         <div>
             <Form onSubmit={handleSubmit}>
@@ -208,6 +243,12 @@ const VacancySkills = ({ vacancyId, projectId }: Props) => {
                         </Table>
                     </Row>
                 </Container>
+                <ConfirmModal
+                    show={showConfirmModal}
+                    onHide={() => setShowConfirmModal(false)}
+                    onConfirm={confirmDelete}
+                    message="Are you sure you want to remove this skill?"
+                />
             </Form >
         </div >
     );

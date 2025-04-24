@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
 import { Trash } from 'react-bootstrap-icons';
 import { authFetch } from '../../utils/authFetch';
-
+import toast from 'react-hot-toast';
 
 const TimeOffComponent = () => {
 
@@ -92,7 +92,7 @@ const TimeOffComponent = () => {
             });
 
             if (response.ok) {
-                alert("Timeoff was created successfully!");
+                toast.success("Timeoff was created successfully!");
                 fetchData();
                 setForm({
                     ...form,
@@ -101,7 +101,7 @@ const TimeOffComponent = () => {
                     endDate: new Date().toISOString().split("T")[0]
                 });
             } else {
-                alert("Something went wrong!");
+                toast.error("Something went wrong!");
                 console.info("Submitted values:", {
                     ...timeOffBO,
                     employeeId: form.employeeId,
@@ -123,10 +123,10 @@ const TimeOffComponent = () => {
             });
 
             if (response.ok) {
-                alert("Timeoff was deleted successfully!");
+                toast.success("Timeoff was deleted successfully!");
                 fetchData();
             } else {
-                alert("Failed to delete timeoff");
+                toast.error("Failed to delete timeoff");
             }
         }
         catch (error) {

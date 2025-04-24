@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Form, Row, Col, Container } from "react-bootstrap";
 import { useSearchParams } from 'next/navigation';
 import { authFetch } from '../../utils/authFetch';
-
+import toast from 'react-hot-toast';
 
 const EmployeeDetails = () => {
 
@@ -74,9 +74,9 @@ const EmployeeDetails = () => {
                 body: formData
             });
             if (response.ok) {
-                alert("Employee was updated successfully!");
+                toast.success("Employee was updated successfully!");
             } else {
-                alert("Something went wrong!");
+                toast.error("Something went wrong!");
             }
         } catch (error) {
             console.error("Error submitting form:", error);

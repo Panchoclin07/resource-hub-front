@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Row, Col, Container } from "react-bootstrap";
 import { useRouter } from 'next/navigation';
 import { authFetch } from '../../utils/authFetch';
+import toast from 'react-hot-toast';
 
 const EmployeeRegistration = () => {
     const today = new Date().toISOString().split('T')[0];
@@ -59,10 +60,10 @@ const EmployeeRegistration = () => {
                 });
 
             if (response.ok) {
-                alert("Employee created successfully!");
+                toast.success("Employee created successfully!");
                 router.push(`/components/employee/employee_search`);
             } else {
-                alert("Something went wrong!");
+                toast.error("Something went wrong!");
             }
         } catch (error) {
             console.error("Error submitting form:", error);

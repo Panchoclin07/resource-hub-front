@@ -4,6 +4,8 @@ import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { authFetch } from '../../utils/authFetch';
+import toast from 'react-hot-toast';
+
 
 const VacancyRegistration = () => {
     const today = new Date().toISOString().split('T')[0];
@@ -66,14 +68,14 @@ const VacancyRegistration = () => {
                     }
                 }
 
-                alert("Vacancy created successfully!");
+                toast.success("Vacancy created successfully!");
             } else {
-                alert("Something went wrong!");
+                toast.error("Something went wrong!");
                 console.log(vacancyBO);
             }
         } catch (error) {
             console.error("Error submitting form:", error);
-            alert("Something went wrong!");
+            toast.error("Something went wrong!");
         }
     }
 

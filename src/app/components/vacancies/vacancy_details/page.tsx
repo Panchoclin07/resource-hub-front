@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { authFetch } from '../../utils/authFetch';
+import toast from 'react-hot-toast';
 
 type Props = {
     vacancyId: string;
@@ -53,9 +54,9 @@ const VacancyDetails = ({ vacancyId, projectId }: Props) => {
             });
 
             if (response.ok) {
-                alert("Vacancy updated successfully!");
+                toast.success("Vacancy updated successfully!");
             } else {
-                alert("Something went wrong!");
+                toast.error("Something went wrong!");
                 console.log(vacancyBO);
             }
         } catch (error) {

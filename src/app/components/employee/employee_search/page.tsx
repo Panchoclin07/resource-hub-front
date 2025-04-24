@@ -9,6 +9,7 @@ import PersonPlusIcon from '../../common/icons/person_add';
 import PenIcon from '../../common/icons/pen';
 import DownloadIcon from '../../common/icons/download';
 import { authFetch } from '../../utils/authFetch';
+import toast from 'react-hot-toast';
 
 type Props = {
     vacancyId: string;
@@ -112,7 +113,7 @@ const EmployeeSearch = ({ vacancyId, projectId }: Props) => {
 
     const assignEmployeeToVacancy = async (employeeId: string) => {
         if (!validProjectId || !validVacancyId) {
-            alert("Project or Vacancy ID is missing or invalid.");
+            toast.error("Project or Vacancy ID is missing or invalid.");
             return;
         }
 
@@ -128,10 +129,10 @@ const EmployeeSearch = ({ vacancyId, projectId }: Props) => {
                 throw new Error("Failed to assign employee");
             }
 
-            alert(`Employee ${employeeId} successfully assigned to the vacancy!`);
+            toast.success(`Employee ${employeeId} successfully assigned to the vacancy!`);
         } catch (error) {
             console.error("Assignment error:", error);
-            alert("An error occurred while assigning the employee.");
+            toast.error("An error occurred while assigning the employee.");
         }
     };
 

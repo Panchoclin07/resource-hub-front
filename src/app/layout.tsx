@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import HeaderComponent from "./components/common/header/header-component";
 import Footer from "./components/common/footer";
 import MsalProviderWrapper from "../auth/MsalProviderWrapper";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <MsalProviderWrapper>
+          <Toaster />
           <HeaderComponent />
           <main className="content">{children}</main>
           <Footer />

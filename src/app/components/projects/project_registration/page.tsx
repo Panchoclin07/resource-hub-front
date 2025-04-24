@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { useRouter } from 'next/navigation';
 import { authFetch } from '../../utils/authFetch';
+import toast from 'react-hot-toast';
 
 const ProjectRegistration = () => {
     const today = new Date().toISOString().split('T')[0];
@@ -51,10 +52,10 @@ const ProjectRegistration = () => {
             });
 
             if (response.ok) {
-                alert("Project created successfully!");
+                toast.success("Project created successfully!");
                 router.push(`/components/projects/project_search`);
             } else {
-                alert("Something went wrong!");
+                toast.error("Something went wrong!");
                 console.log(projectBO);
             }
         } catch (error) {

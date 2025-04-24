@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { authFetch } from '../../utils/authFetch';
-
+import toast from 'react-hot-toast';
 
 type Props = {
     projectId: string;
@@ -53,9 +53,9 @@ const ProjectDetails = ({ projectId }: Props) => {
             });
 
             if (response.ok) {
-                alert("Project updated successfully!");
+                toast.success("Project updated successfully!");
             } else {
-                alert("Something went wrong!");
+                toast.error("Something went wrong!");
                 console.log(projectBO);
             }
         } catch (error) {
